@@ -35,7 +35,6 @@ function(compile_options TARGET_NAME )
                 -Wno-nullability-completeness
                 -Werror
         )
-        target_link_libraries(${TARGET_NAME} -static)
         if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             target_compile_options(${TARGET_NAME} PRIVATE
                     -O0

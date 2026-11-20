@@ -1,6 +1,14 @@
 # Configuration de CMake pour TP C++ Moderne esimed
 cmake_minimum_required(VERSION 3.29)
 
+# macOS : le SDK 27 est incompatible avec libc++ 22 (<cfloat> cassé) ;
+# on force le SDK 26 par défaut (doit être défini avant project()).
+# Surchargeable avec -DCMAKE_OSX_SYSROOT=...
+set(_MACOS_SDK_26 "/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk")
+if(NOT CMAKE_OSX_SYSROOT AND EXISTS "${_MACOS_SDK_26}")
+    set(CMAKE_OSX_SYSROOT "${_MACOS_SDK_26}" CACHE PATH "macOS SDK" FORCE)
+endif()
+
 # Nom du projet et de l'exécutable généré
 project(exemples_cours_cpp)
 
@@ -49,7 +57,9 @@ target_sources(${PROJECT_NAME}
 compile_options(${PROJECT_NAME})
 
 # Exécutable pour les tests unitaires
-add_executable(tests ${TEST_FILES} ${PROJECT_IMPLEMENTATION_FILES})
+add_executable(tests ${TEST_FILES} ${PROJECT_IMPLEMENTATION_FILES}
+        tests/exo2.cpp
+)
 target_sources(tests
         PUBLIC
         FILE_SET CXX_MODULES
@@ -62,3 +72,7 @@ target_link_libraries(tests PRIVATE Catch2::Catch2WithMain std-cxx-modules)
 include(CTest)
 include(Catch)
 catch_discover_tests(tests)
+
+
+
+

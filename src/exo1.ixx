@@ -1,48 +1,61 @@
-module;
-// Import rapide de la bibliothèque standard
+export module exo1;
 import std;
 
-// Nommage et exportation de ce module
-export module exo1;
-
-// On met toutes les classes du module dans un espace de nom
-// ayant le même nom que le module pour plus de clarté et éviter
-// les conflits de nommage.
-// On exporte la totalité des classe de l'espace de nom.
 export namespace exo1 {
 
-    // Exemple de classe pour convention de nommage
-    class MyClass {
+    class Vector {
     public:
-        MyClass() = default;
+        Vector(const double x, const double y, const double z) : x{x}, y{y}, z{z} {}
 
-        explicit MyClass(const double value): value{value} {}
+        double GetX() const { return x; }
+        double GetY() const { return y; }
+        double GetZ() const { return z; }
 
-        // Ne pas oublier d'être "const-correct"
-        [[nodiscard]] double GetValue() const { return value; }
+        void SetX(const double value) { x = value; }
+        void SetY(const double value) { y = value; }
+        void SetZ(const double value) { z = value; }
 
-        void SetValue(const double value) { this->value = value; }
+        void Homothety(const double factor) {
+            x *= factor;
+            y *= factor;
+            z *= factor;
+        }
 
-        [[nodiscard]] std::string ToString() const {
-            return std::format("{0:.2f}", value);
+        void Sum(const Vector other) {
+            x += other.x;
+            y += other.y;
+            z += other.z;
+        }
+
+        std::string ToString() const {
+            return std::format("({:.2f},{:.2f},{:.2f})", x, y, z);
         }
 
     private:
-        // Prendre l'habitude d'utiliser la syntaxe moderne d'initialisation
-        // identique pour tous les types de données : simples, class, struct, ...
-        double value{0.0};
+        double x{0.0};
+        double y{0.0};
+        double z{0.0};
     };
 
-    // Exemple de classe utilisée dans la fonction main()
     class Application {
     public:
-        // Tout le code de l'exercice doit être dans ce constructeur
         Application() {
-            std::cout << "Hello from exo1::Application()\n";
-            // Par défaut les variables sont constantes et on utilise l'inférence de type avec "auto"
-            // ainsi que la syntaxe moderne d'instanciation automatique et d'initialisation avec {}
-            const auto obj1 = MyClass{123.456};
-            std::cout << obj1.ToString() << std::endl;
+            auto v1 = Vector{12.34, 34.56, 56.78};
+            std::cout << "v1 = " << v1.ToString() << '\n';
+
+            v1.Homothety(2.1);
+            std::cout << "v1 * 2.1 = " << v1.ToString() << '\n';
+
+            v1.SetX(34.12);
+            v1.SetY(56.34);
+            v1.SetZ(78.56);
+            std::cout << "v1 modifie = " << v1.ToString() << '\n';
+
+            const auto v2 = Vector{1.1, 2.2, 3.3};
+            std::cout << "v2 = " << v2.ToString() << '\n';
+
+            v1.Sum(v2);
+            std::cout << "v1 + v2 = " << v1.ToString() << '\n';
         }
     };
 

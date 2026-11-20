@@ -82,6 +82,41 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     endif()
 endif()
 
+# CMake >= 4.5 gère nativement (non expérimental) "import std" (Clang + libc++) via libc++.modules.json.
+# Il synthétise alors son propre module std : compiler aussi std.cppm dans
+# std-cxx-modules provoque un conflit ("Disagreement of the location of the 'std' module").
+# On utilise donc le support natif quand il est disponible.
+if(NOT MSVC AND CMAKE_VERSION VERSION_GREATER_EQUAL 4.5)
+    if(NOT CMAKE_CXX_STDLIB_MODULES_JSON OR NOT EXISTS "${CMAKE_CXX_STDLIB_MODULES_JSON}")
+        # clang -print-file-name ne trouve pas toujours le fichier (ex. Homebrew : lib/c++/)
+        get_filename_component(_libcxx_prefix "${STD_BASE_DIR}/../../.." ABSOLUTE)
+        foreach(_json IN ITEMS
+                "${_libcxx_prefix}/lib/c++/libc++.modules.json"
+                "${_libcxx_prefix}/lib/libc++.modules.json"
+                "${_libcxx_prefix}/lib/${CMAKE_CXX_LIBRARY_ARCHITECTURE}/libc++.modules.json")
+            if(EXISTS "${_json}")
+                set(CMAKE_CXX_STDLIB_MODULES_JSON "${_json}")
+                break()
+            endif()
+        endforeach()
+    endif()
+    if(NOT CMAKE_CXX_STDLIB_MODULES_JSON OR NOT EXISTS "${CMAKE_CXX_STDLIB_MODULES_JSON}")
+        message(FATAL_ERROR
+            "libc++.modules.json introuvable : requis par CMake ${CMAKE_VERSION} pour 'import std'. "
+            "Spécifiez -DCMAKE_CXX_STDLIB_MODULES_JSON=/chemin/vers/libc++.modules.json")
+    endif()
+    # La détection du compilateur (dans project()) a pu échouer : on efface son erreur
+    set(CMAKE_CXX_COMPILER_IMPORT_STD_ERROR_MESSAGE "")
+    message(STATUS "import std : support natif CMake (${CMAKE_CXX_STDLIB_MODULES_JSON})")
+    set(CMAKE_CXX_MODULE_STD ON)
+    add_library(std-cxx-modules INTERFACE)
+    target_compile_options(std-cxx-modules INTERFACE
+            -Wno-reserved-module-identifier
+            -Wno-reserved-user-defined-literal
+    )
+    return()
+endif()
+
 add_library(std-cxx-modules STATIC)
 target_sources(std-cxx-modules
         PUBLIC
