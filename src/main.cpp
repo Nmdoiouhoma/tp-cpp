@@ -6,6 +6,7 @@ import exo2;
 import exo3;
 import exo4;
 import exo5;
+import exo6;
 import my_module;
 import examples_control_struct;
 import examples_enum_structs;
@@ -24,6 +25,7 @@ int main() {
     const auto application3 = exo3::Application{};
     const auto application4 = exo4::Application{};
     const auto application5 = exo5::Application{};
+    const auto application6 = exo6::Application{};
 
     // int32_t i1{123};
     // auto i2 = 123;
@@ -33,7 +35,6 @@ int main() {
     // auto obj = exo1::MyClass();
     //
     // function2();
-
     // example::example_lambdas();
 
     return 0;
