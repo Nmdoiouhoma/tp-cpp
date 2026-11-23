@@ -7,6 +7,7 @@ import exo3;
 import exo4;
 import exo5;
 import exo6;
+import exo7;
 import my_module;
 import examples_control_struct;
 import examples_enum_structs;
@@ -26,6 +27,7 @@ int main() {
     const auto application4 = exo4::Application{};
     const auto application5 = exo5::Application{};
     const auto application6 = exo6::Application{};
+    const auto application7 = exo7::Application{};
 
     // int32_t i1{123};
     // auto i2 = 123;
