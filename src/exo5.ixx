@@ -28,38 +28,32 @@ export namespace exo5 {
         double radius{};
     };
 
-
     class Polygon : public Shape {
     public:
-        Polygon(const std::initializer_list<double> sides) : sides{sides} {}
+        Polygon(std::initializer_list<double> cotés) : cotés{cotés}  {}
 
         double Perimeter() const override {
-            return std::accumulate(sides.begin(), sides.end(), 0.0);
+            return std::accumulate(cotés.begin(), cotés.end(), 0.0);
         }
-
         std::string ToString() const override {
-            return std::format("Polygone a {} cotes", sides.size());
+            return std::format("Polygone a {} cotes", cotés.size());
         }
 
     private:
-        std::vector<double> sides{};
+        std::vector<double>cotés {};
     };
-
 
     class Rectangle : public Polygon {
     public:
-        Rectangle(const double width, const double height)
-            : Polygon{width, height, width, height}, width{width}, height{height} {}
+        Rectangle(const double width, const double height) : width(width), height(height), Polygon{width, height, width, height} {}
 
         std::string ToString() const override {
             return std::format("Rectangle de {:.2f} x {:.2f}", width, height);
         }
-
     private:
-        double width{};
-        double height{};
+        const double width;
+        const double height;
     };
-
 
     class Square : public Rectangle {
     public:
@@ -78,15 +72,18 @@ export namespace exo5 {
     public:
         Application() {
             const auto circle = Circle{1.2};
-            const auto polygon = Polygon{1.0, 2.0, 3.0};
+            const auto polygon = Polygon{1.0,2.0,3.0};
+            std::cout << circle.ToString() << '\n';
+            std::cout << std::format("Perimetre = {:.2f}\n", circle.Perimeter());
+            std::cout << polygon.ToString() << '\n';
+            std::cout << std::format("Perimeter = {:.2f}\n", polygon.Perimeter());
+
             const auto rectangle = Rectangle{1.0, 2.0};
             const auto square = Square{1.0};
-
-            // Polymorphisme : on manipule toutes les formes comme des Shape
-            const auto shapes = std::vector<const Shape*>{&circle, &polygon, &rectangle, &square};
-            for (const auto* shape : shapes) {
-                std::cout << std::format("{} -> perimetre = {:.2f}\n", shape->ToString(), shape->Perimeter());
-            }
+            std::cout << rectangle.ToString() << '\n';
+            std::cout << std::format("Perimeter = {:.2f}\n", rectangle.Perimeter());
+            std::cout << square.ToString() << '\n';
+            std::cout << std::format("Perimeter = {:.2f}\n", square.Perimeter());
         }
     };
 
