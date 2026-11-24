@@ -10,6 +10,7 @@ import exo6;
 import exo7;
 import exo8;
 import exo9;
+import lzw;
 import my_module;
 import examples_control_struct;
 import examples_enum_structs;
@@ -22,7 +23,7 @@ import examples_lambdas;
 
 static auto var_globale = 123.45;
 
-int main() {
+int main(const int argc, const char* const argv[]) {
     const auto application = exo1::Application{};
     const auto application2 = exo2::Application{};
     const auto application3 = exo3::Application{};
@@ -32,6 +33,11 @@ int main() {
     const auto application7 = exo7::Application{};
     const auto application8 = exo8::Application{};
     const auto application9 = exo9::Application{};
+
+    // Exercice 10 : ./exemples_cours_cpp <source> <compressé> <décompressé>
+    if (argc == 4) {
+        const auto application10 = lzw::Application{argv[1], argv[2], argv[3]};
+    }
 
     // int32_t i1{123};
     // auto i2 = 123;
